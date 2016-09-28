@@ -19,37 +19,38 @@ def decrypt(resp):
         lugar = resp.find("<a href")
     return resp
 
+def main():
+    domain = input("dominio: ")
+    domain = str.encode(domain)
 
-domain = input("dominio: ")
-domain = str.encode(domain)
+    # P.O.G. simples pra ter certeza que tá gerando o tipo de dado correto
+    #print(type(domain))
 
-# P.O.G. simples pra ter certeza que tá gerando o tipo de dado correto
-print(type(domain))
+    # valores para a request
+    url = 'https://registro.br/cgi-bin/whois/'
+    values = {'qr': domain}
 
-# valores para a request
-url = 'https://registro.br/cgi-bin/whois/'
-values = {'qr': domain}
+    # outro P.O.G. simples
+    #print(type(values))
 
-# outro P.O.G. simples
-print(type(values))
+    # request via POST
+    data = parse.urlencode(values)
 
-# request via POST
-data = parse.urlencode(values)
+    # P.O.G. de novo
+    #print(type(data))
+    data = str.encode(data)
 
-# P.O.G. de novo
-print(type(data))
-data = str.encode(data)
+    resp = request.urlopen(url, data).read()
+    resp = resp.decode('iso-8859-1')
+    whois = decrypt(resp)
+    print(whois)
 
-resp = request.urlopen(url, data).read()
-resp = resp.decode('iso-8859-1')
-whois = decrypt(resp)
-print(whois)
-
-# tava com preguiça de fazer um sistema  de salvamento mais complexo
-teste = input("Deseja salvar? [s-sim]\n")
-if teste == 's':
-    teste = input("Digite o nome do arquivo: ")
-    teste += '.txt'
-    arq = open(teste, "w")
-    arq.write(whois)
-    arq.close()
+    # tava com preguiça de fazer um sistema  de salvamento mais complexo
+    teste = input("Deseja salvar? [s-sim]\n")
+    if teste == 's':
+        teste = input("Digite o nome do arquivo: ")
+        teste += '.txt'
+        arq = open(teste, "w")
+        arq.write(whois)
+        arq.close()
+main()
